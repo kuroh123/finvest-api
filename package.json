@@ -1,0 +1,21 @@
+{
+  "name": "finvest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "author": "obaid",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "prisma": "^6.11.1"
+  }
+}
