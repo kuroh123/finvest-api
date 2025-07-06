@@ -9,8 +9,11 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-const auth = require('./routers/auth');
 
-app.use('/api/auth', auth);
+app.use('/api/auth',  require('./routes/auth'));
+app.use('/api/invoices', require('./routes/invoice'));
+app.use('/api/offers', require('./routes/offer'));
+app.use('/api/payments', require('./routes/payment'));
+app.use('/api/settlements', require('./routes/settlement'));
 
 module.exports = app;
