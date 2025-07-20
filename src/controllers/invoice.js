@@ -1,9 +1,16 @@
-const prisma = require('../prisma/client');
+const prisma = require("../prisma/client");
 
 // Create Invoice
 exports.createInvoice = async (req, res) => {
   try {
-    const { invoiceNumber, buyerName, buyerEmail, buyerGSTIN, amount, dueDate } = req.body;
+    const {
+      invoiceNumber,
+      buyerName,
+      buyerEmail,
+      buyerGSTIN,
+      amount,
+      dueDate,
+    } = req.body;
     const sellerId = req.user.id; // assuming auth middleware sets req.user
     const invoice = await prisma.invoice.create({
       data: {
@@ -19,7 +26,7 @@ exports.createInvoice = async (req, res) => {
     res.json(invoice);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to create invoice' });
+    res.status(500).json({ error: "Failed to create invoice" });
   }
 };
 
@@ -27,13 +34,14 @@ exports.createInvoice = async (req, res) => {
 exports.getSellerInvoices = async (req, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
-      where: { sellerId: req.user.id },
-      include: { offers: true, payments: true }
+      where: { sellerId: req.user.userId },
+      include: { offers: { include: { financier: true } }, payments: true },
     });
+    console.log(req.user);
     res.json(invoices);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch invoices' });
+    res.status(500).json({ error: "Failed to fetch invoices" });
   }
 };
 
@@ -41,12 +49,12 @@ exports.getSellerInvoices = async (req, res) => {
 exports.getAvailableInvoices = async (req, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
-      where: { isFinanced: false, status: 'pending' },
-      include: { seller: true }
+      where: { isFinanced: false, status: "pending" },
+      include: { offers: true, seller: true },
     });
     res.json(invoices);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch available invoices' });
+    res.status(500).json({ error: "Failed to fetch available invoices" });
   }
 };

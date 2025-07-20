@@ -1,4 +1,4 @@
-const prisma = require('../prisma/client');
+const prisma = require("../prisma/client");
 
 // Financier submits an offer
 exports.createOffer = async (req, res) => {
@@ -15,7 +15,7 @@ exports.createOffer = async (req, res) => {
     res.json(offer);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to create offer' });
+    res.status(500).json({ error: "Failed to create offer" });
   }
 };
 
@@ -28,34 +28,35 @@ exports.acceptOffer = async (req, res) => {
     const offer = await prisma.financingRequest.update({
       where: { id: offerId },
       data: {
-        status: 'approved',
-        acceptedAt: new Date()
+        status: "approved",
+        acceptedAt: new Date(),
       },
     });
 
     // Mark invoice as financed if needed
     await prisma.invoice.update({
       where: { id: offer.invoiceId },
-      data: { isFinanced: true, status: 'funded' }
+      data: { isFinanced: true, status: "funded" },
     });
 
     res.json(offer);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to accept offer' });
+    res.status(500).json({ error: "Failed to accept offer" });
   }
 };
 
 // Financier sees their offers
 exports.getMyOffers = async (req, res) => {
+  console.log(req.user);
   try {
     const offers = await prisma.financingRequest.findMany({
-      where: { financierId: req.user.id },
-      include: { invoice: true }
+      where: { financierId: req.user.userId },
+      include: { invoice: true },
     });
     res.json(offers);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch offers' });
+    res.status(500).json({ error: "Failed to fetch offers" });
   }
 };
