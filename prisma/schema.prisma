@@ -41,6 +41,8 @@ model FinancingRequest {
   id              Int      @id @default(autoincrement())
   amountRequested Float
   interestRate    Float
+  disbursedAmount Float?
+  interestAmount  Float?
   status          RequestStatus @default(pending)
   createdAt       DateTime @default(now())
   acceptedAt      DateTime?
