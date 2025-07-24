@@ -39,7 +39,7 @@ exports.createOffer = async (req, res) => {
     const offer = await prisma.financingRequest.create({
       data: {
         invoiceId,
-        financierId: req.user.id,
+        financierId: req.user.userId,
         amountRequested,
         interestRate,
       },
