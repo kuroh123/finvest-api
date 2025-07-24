@@ -8,7 +8,93 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role
+  createdAt DateTime  @default(now())
+  invoices  Invoice[] @relation("SellerInvoices")
+  offers    FinancingRequest[] @relation("FinancierOffers")
+}
+
+model Invoice {
+  id            Int       @id @default(autoincrement())
+  invoiceNumber String
+  buyerName     String
+  buyerEmail    String?
+  buyerGSTIN    String?
+  amount        Float
+  dueDate       DateTime
+  uploadedAt    DateTime @default(now())
+  isFinanced    Boolean  @default(false)
+  status        InvoiceStatus @default(pending)
+  
+  sellerId Int
+  seller   User     @relation("SellerInvoices", fields: [sellerId], references: [id])
+  
+  offers   FinancingRequest[]
+  payments Payment[]
+}
+
+model FinancingRequest {
+  id              Int      @id @default(autoincrement())
+  amountRequested Float
+  interestRate    Float
+  disbursedAmount Float?
+  interestAmount  Float?
+  status          RequestStatus @default(pending)
+  createdAt       DateTime @default(now())
+  acceptedAt      DateTime?
+
+  invoiceId  Int
+  invoice    Invoice @relation(fields: [invoiceId], references: [id])
+
+  financierId Int
+  financier   User @relation("FinancierOffers", fields: [financierId], references: [id])
+
+  settlements Settlement[]
+}
+
+model Payment {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  paidAt      DateTime @default(now())
+  method      String   // e.g., UPI, NEFT, Cheque
+  
+  invoiceId   Int
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+
+  settlements Settlement[]
+}
+
+model Settlement {
+  id              Int      @id @default(autoincrement())
+  amountSettled   Float    // principal + interest
+  settledAt       DateTime @default(now())
+  platformFee     Float    // if applicable
+  notes           String?
+
+  financingRequestId Int
+  financingRequest   FinancingRequest @relation(fields: [financingRequestId], references: [id])
+
+  paymentId Int
+  payment   Payment @relation(fields: [paymentId], references: [id])
+}
+
+enum Role {
+  seller
+  financier
+}
+
+enum RequestStatus {
+  pending
+  approved
+  rejected
+}
+
+enum InvoiceStatus {
+  pending
+  funded
+  paid
 }

@@ -10,6 +10,9 @@
   "jest": {
     "testEnvironment": "node"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "author": "obaid",
   "license": "ISC",
   "dependencies": {
