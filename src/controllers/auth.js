@@ -18,7 +18,13 @@ exports.registerUser = async (req, res) => {
     //   secure: process.env.NODE_ENV === "production",
     //   maxAge: 24 * 60 * 60 * 1000,
     // });
-    res.json({ id: user.id, email: user.email, token, role: user.role });
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token,
+      role: user.role,
+    });
   } catch (err) {
     res.status(400).json({ error: "Email may already exist" });
   }
@@ -39,5 +45,11 @@ exports.loginUser = async (req, res) => {
   //   secure: process.env.NODE_ENV === "production",
   //   maxAge: 24 * 60 * 60 * 1000,
   // });
-  res.json({ user: user.email, token, role: user.role, id: user.id });
+  res.json({
+    name: user.name,
+    email: user.email,
+    token,
+    role: user.role,
+    id: user.id,
+  });
 };
