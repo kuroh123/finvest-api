@@ -25,14 +25,6 @@ app.use(
   })
 );
 
-// Handle preflight explicitly (sometimes needed on Render)
-app.options(
-  "*",
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
 // routes
 
 app.use("/api/auth", require("./routes/auth"));
